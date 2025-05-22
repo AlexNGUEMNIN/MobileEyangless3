@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { 
   IonHeader, 
@@ -15,16 +16,40 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonIcon
+  IonIcon,
+  IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { locationOutline, timeOutline, callOutline, globeOutline } from 'ionicons/icons';
+import { 
+  locationOutline, 
+  timeOutline, 
+  bedOutline, 
+  wifiOutline,
+  tvOutline,
+  carOutline
+} from 'ionicons/icons';
+
+interface CityDetail {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  price: string;
+  rating: number;
+  location: string;
+  amenities: string[];
+  host: {
+    name: string;
+    image: string;
+    rating: number;
+  };
+}
 
 @Component({
   selector: 'app-city-details',
   template: `
-    <ion-header>
-      <ion-toolbar color="primary">
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/tabs/home"></ion-back-button>
         </ion-buttons>
@@ -33,77 +58,209 @@ import { locationOutline, timeOutline, callOutline, globeOutline } from 'ionicon
     </ion-header>
 
     <ion-content>
-      <ion-card>
-        <ion-img [src]="city?.image" alt="city image"></ion-img>
-        <ion-card-header>
-          <ion-card-title>{{ city?.name }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
+      <div class="city-image">
+        <ion-img [src]="city?.image"></ion-img>
+        <div class="price-tag">{{ city?.price }}</div>
+      </div>
+
+      <div class="content-container">
+        <h1>{{ city?.name }}</h1>
+        
+        <div class="rating">
+          <span *ngFor="let star of [1,2,3,4,5]" 
+                [class.filled]="star <= city?.rating">★</span>
+          <span class="reviews">(127 avis)</span>
+        </div>
+
+        <div class="location">
+          <ion-icon name="location-outline"></ion-icon>
+          <span>{{ city?.location }}</span>
+        </div>
+
+        <div class="section">
+          <h2>Description</h2>
           <p>{{ city?.description }}</p>
-          
-          <ion-list>
-            <ion-item>
-              <ion-icon name="location-outline" slot="start"></ion-icon>
-              <ion-label>
-                <h2>Location</h2>
-                <p>{{ city?.location }}</p>
-              </ion-label>
-            </ion-item>
+        </div>
 
-            <ion-item>
-              <ion-icon name="time-outline" slot="start"></ion-icon>
-              <ion-label>
-                <h2>Best Time to Visit</h2>
-                <p>{{ city?.bestTime }}</p>
-              </ion-label>
-            </ion-item>
+        <div class="section">
+          <h2>Équipements</h2>
+          <div class="amenities-grid">
+            <div class="amenity" *ngFor="let amenity of city?.amenities">
+              <ion-icon [name]="getAmenityIcon(amenity)"></ion-icon>
+              <span>{{ amenity }}</span>
+            </div>
+          </div>
+        </div>
 
-            <ion-item>
-              <ion-icon name="call-outline" slot="start"></ion-icon>
-              <ion-label>
-                <h2>Emergency Contact</h2>
-                <p>{{ city?.emergency }}</p>
-              </ion-label>
-            </ion-item>
+        <div class="section host-section">
+          <h2>Votre hôte</h2>
+          <div class="host-info">
+            <img [src]="city?.host?.image" alt="Host">
+            <div class="host-details">
+              <h3>{{ city?.host?.name }}</h3>
+              <div class="host-rating">
+                <span *ngFor="let star of [1,2,3,4,5]" 
+                      [class.filled]="star <= city?.host?.rating">★</span>
+                <span class="reviews">(48 avis)</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <ion-item>
-              <ion-icon name="globe-outline" slot="start"></ion-icon>
-              <ion-label>
-                <h2>Tourist Information</h2>
-                <p>{{ city?.touristInfo }}</p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
+        <ion-button expand="block" class="book-button">
+          Réserver maintenant
+        </ion-button>
+      </div>
     </ion-content>
   `,
   styles: [`
-    ion-card {
-      margin: 0;
+    ion-header {
+      ion-toolbar {
+        --background: #ffffff;
+      }
+    }
+
+    .city-image {
+      position: relative;
       
       ion-img {
         height: 250px;
         object-fit: cover;
       }
-    }
-    
-    ion-card-content {
-      p {
-        margin-bottom: 20px;
+
+      .price-tag {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        background: #10B981;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
       }
     }
-    
-    ion-item {
-      --padding-start: 0;
-      
-      ion-icon {
-        margin-right: 16px;
+
+    .content-container {
+      padding: 20px;
+
+      h1 {
+        font-size: 24px;
+        margin: 0 0 8px;
+        color: #333;
+      }
+
+      .rating {
+        font-size: 18px;
+        color: #ffd700;
+        margin-bottom: 12px;
+
+        .filled {
+          color: #ffd700;
+        }
+
+        .reviews {
+          color: #666;
+          font-size: 14px;
+          margin-left: 8px;
+        }
+      }
+
+      .location {
+        display: flex;
+        align-items: center;
+        color: #666;
+        margin-bottom: 20px;
+
+        ion-icon {
+          margin-right: 8px;
+          color: #10B981;
+        }
+      }
+
+      .section {
+        margin-bottom: 24px;
+
+        h2 {
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 12px;
+        }
+
+        p {
+          color: #666;
+          line-height: 1.6;
+          margin: 0;
+        }
+      }
+
+      .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+
+        .amenity {
+          display: flex;
+          align-items: center;
+          color: #666;
+
+          ion-icon {
+            color: #10B981;
+            margin-right: 8px;
+            font-size: 20px;
+          }
+        }
+      }
+
+      .host-section {
+        .host-info {
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            margin-right: 16px;
+          }
+
+          .host-details {
+            h3 {
+              margin: 0 0 4px;
+              font-size: 16px;
+              color: #333;
+            }
+
+            .host-rating {
+              color: #ffd700;
+              font-size: 14px;
+
+              .filled {
+                color: #ffd700;
+              }
+
+              .reviews {
+                color: #666;
+                margin-left: 4px;
+              }
+            }
+          }
+        }
+      }
+
+      .book-button {
+        --background: #10B981;
+        --border-radius: 8px;
+        --padding-top: 20px;
+        --padding-bottom: 20px;
+        margin-top: 24px;
+        text-transform: none;
+        font-weight: 500;
       }
     }
   `],
   standalone: true,
   imports: [
+    CommonModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -118,28 +275,53 @@ import { locationOutline, timeOutline, callOutline, globeOutline } from 'ionicon
     IonList,
     IonItem,
     IonLabel,
-    IonIcon
+    IonIcon,
+    IonButton
   ]
 })
 export class CityDetailsPage implements OnInit {
-  city: any;
+  city?: CityDetail;
 
   constructor(private route: ActivatedRoute) {
-    addIcons({ locationOutline, timeOutline, callOutline, globeOutline });
+    addIcons({ 
+      locationOutline, 
+      timeOutline, 
+      bedOutline, 
+      wifiOutline,
+      tvOutline,
+      carOutline
+    });
   }
 
   ngOnInit() {
     const cityId = this.route.snapshot.paramMap.get('id');
-    // In a real app, you would fetch this data from a service
+    // Simulated city data
     this.city = {
       id: 1,
-      name: 'New York',
-      image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg',
-      description: 'New York City comprises 5 boroughs sitting where the Hudson River meets the Atlantic Ocean. At its core is Manhattan, a densely populated borough that's among the world's major commercial, financial and cultural centers.',
-      location: 'United States, North America',
-      bestTime: 'April to June or September to early November',
-      emergency: '911',
-      touristInfo: 'Visit NYC Tourism Center or call +1-212-484-1222'
+      name: 'Appartement au cœur de Paris',
+      image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg',
+      description: 'Magnifique appartement situé en plein cœur de Paris, à deux pas des Champs-Élysées. Vue imprenable sur la Tour Eiffel, intérieur moderne et chaleureux.',
+      price: '180€/nuit',
+      rating: 4,
+      location: 'Paris, France',
+      amenities: ['Wifi', 'TV', 'Parking', 'Climatisation', 'Cuisine', 'Balcon'],
+      host: {
+        name: 'Marie Dubois',
+        image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg',
+        rating: 5
+      }
     };
+  }
+
+  getAmenityIcon(amenity: string): string {
+    const icons: { [key: string]: string } = {
+      'Wifi': 'wifi-outline',
+      'TV': 'tv-outline',
+      'Parking': 'car-outline',
+      'Climatisation': 'thermometer-outline',
+      'Cuisine': 'restaurant-outline',
+      'Balcon': 'home-outline'
+    };
+    return icons[amenity] || 'checkmark-outline';
   }
 }

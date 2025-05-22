@@ -3,67 +3,130 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { 
   IonContent, 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
   IonItem, 
   IonLabel, 
   IonInput, 
   IonButton,
-  IonButtons,
-  IonBackButton
+  IonIcon
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { mailOutline, lockClosedOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
   template: `
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-title>Login</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="ion-padding">
+    <ion-content class="login-content">
       <div class="login-container">
-        <h1>Welcome Back</h1>
-        <form (ngSubmit)="login()">
-          <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input type="email" [(ngModel)]="email" name="email"></ion-input>
+        <div class="header">
+          <img src="assets/logo.png" alt="Logo" class="logo">
+          <h1>Connectez-vous</h1>
+          <p>à votre compte</p>
+        </div>
+
+        <form (ngSubmit)="login()" class="login-form">
+          <ion-item class="custom-input">
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-input 
+              type="email" 
+              placeholder="Email"
+              [(ngModel)]="email" 
+              name="email">
+            </ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
+          <ion-item class="custom-input">
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-input 
+              type="password" 
+              placeholder="Mot de passe"
+              [(ngModel)]="password" 
+              name="password">
+            </ion-input>
           </ion-item>
 
-          <ion-button expand="block" type="submit" class="ion-margin-top">Login</ion-button>
-          <ion-button expand="block" fill="clear" (click)="navigateToRegister()">
-            Don't have an account? Register
+          <ion-button expand="block" class="login-button" type="submit">
+            Se connecter
           </ion-button>
+
+          <div class="register-link">
+            <span>Vous n'avez pas de compte?</span>
+            <ion-button fill="clear" (click)="navigateToRegister()">
+              S'inscrire
+            </ion-button>
+          </div>
         </form>
       </div>
     </ion-content>
   `,
   styles: [`
-    .login-container {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 2rem;
+    .login-content {
+      --background: #ffffff;
+    }
 
-      h1 {
-        text-align: center;
-        margin-bottom: 2rem;
+    .login-container {
+      padding: 2rem;
+      height: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      margin-top: 2rem;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin: 0;
+    }
+
+    p {
+      color: #666;
+      margin: 8px 0 0;
+    }
+
+    .login-form {
+      .custom-input {
+        --background: #f5f5f5;
+        --border-radius: 8px;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        margin-bottom: 16px;
+
+        ion-icon {
+          color: #666;
+          margin-right: 12px;
+        }
+      }
+    }
+
+    .login-button {
+      --background: #10B981;
+      --border-radius: 8px;
+      --padding-top: 20px;
+      --padding-bottom: 20px;
+      margin-top: 2rem;
+      text-transform: none;
+    }
+
+    .register-link {
+      margin-top: 2rem;
+      text-align: center;
+      
+      span {
+        color: #666;
       }
 
-      form {
-        ion-item {
-          margin-bottom: 1rem;
-        }
+      ion-button {
+        --color: #10B981;
+        text-transform: none;
+        font-weight: 500;
       }
     }
   `],
@@ -71,25 +134,22 @@ import {
   imports: [
     FormsModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonItem,
     IonLabel,
     IonInput,
     IonButton,
-    IonButtons,
-    IonBackButton
+    IonIcon
   ]
 })
 export class LoginPage {
   email: string = '';
   password: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    addIcons({ mailOutline, lockClosedOutline });
+  }
 
   login() {
-    // Add login logic here
     this.router.navigate(['/tabs/home']);
   }
 

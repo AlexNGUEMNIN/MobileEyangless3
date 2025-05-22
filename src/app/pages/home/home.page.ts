@@ -1,47 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { 
   IonHeader, 
   IonToolbar, 
   IonTitle, 
   IonContent, 
-  IonList,
-  IonItem,
-  IonLabel,
   IonSearchbar,
   IonCard,
+  IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent,
   IonImg,
   IonGrid,
   IonRow,
   IonCol,
   IonMenuButton,
-  IonButtons
+  IonButtons,
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
+  IonLabel
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { homeOutline, mapOutline, heartOutline, personOutline } from 'ionicons/icons';
 
 interface City {
   id: number;
   name: string;
   image: string;
   description: string;
+  price: string;
+  rating: number;
 }
 
 @Component({
   selector: 'app-home',
   template: `
-    <ion-header>
-      <ion-toolbar color="primary">
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Discover Cities</ion-title>
+        <ion-title>Les belles villes</ion-title>
       </ion-toolbar>
       <ion-toolbar>
         <ion-searchbar
-          placeholder="Search cities..."
+          placeholder="Rechercher une ville..."
           (ionInput)="handleSearch($event)"
+          class="custom-searchbar"
         ></ion-searchbar>
       </ion-toolbar>
     </ion-header>
@@ -49,86 +57,194 @@ interface City {
     <ion-content>
       <ion-grid>
         <ion-row>
-          <ion-col size="12" sizeMd="6" *ngFor="let city of filteredCities">
-            <ion-card (click)="openCityDetails(city.id)">
+          <ion-col size="6" *ngFor="let city of filteredCities">
+            <ion-card (click)="openCityDetails(city.id)" class="city-card">
               <ion-img [src]="city.image" alt="city image"></ion-img>
               <ion-card-header>
                 <ion-card-title>{{ city.name }}</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                {{ city.description }}
+                <p class="price">{{ city.price }}</p>
+                <div class="rating">
+                  <span *ngFor="let star of [1,2,3,4,5]" 
+                        [class.filled]="star <= city.rating">★</span>
+                </div>
               </ion-card-content>
             </ion-card>
           </ion-col>
         </ion-row>
       </ion-grid>
+
+      <ion-tabs>
+        <ion-tab-bar slot="bottom">
+          <ion-tab-button tab="home">
+            <ion-icon name="home-outline"></ion-icon>
+            <ion-label>Accueil</ion-label>
+          </ion-tab-button>
+
+          <ion-tab-button tab="map">
+            <ion-icon name="map-outline"></ion-icon>
+            <ion-label>Carte</ion-label>
+          </ion-tab-button>
+
+          <ion-tab-button tab="favorites">
+            <ion-icon name="heart-outline"></ion-icon>
+            <ion-label>Favoris</ion-label>
+          </ion-tab-button>
+
+          <ion-tab-button tab="profile">
+            <ion-icon name="person-outline"></ion-icon>
+            <ion-label>Profil</ion-label>
+          </ion-tab-button>
+        </ion-tab-bar>
+      </ion-tabs>
     </ion-content>
   `,
   styles: [`
-    ion-card {
-      margin: 10px;
-      cursor: pointer;
+    ion-header {
+      background: #ffffff;
       
-      ion-img {
-        height: 200px;
-        object-fit: cover;
+      ion-toolbar {
+        --background: #ffffff;
       }
     }
-    
-    ion-card-title {
-      font-size: 1.2em;
-      font-weight: bold;
+
+    .custom-searchbar {
+      --background: #f5f5f5;
+      --border-radius: 8px;
+      --box-shadow: none;
+      --placeholder-color: #666;
+      --icon-color: #666;
+      padding: 0 16px;
+    }
+
+    .city-card {
+      margin: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+
+      ion-img {
+        height: 120px;
+        object-fit: cover;
+      }
+
+      ion-card-header {
+        padding: 12px;
+
+        ion-card-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+
+      ion-card-content {
+        padding: 0 12px 12px;
+
+        .price {
+          color: #10B981;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .rating {
+          color: #ffd700;
+          font-size: 14px;
+          margin-top: 4px;
+
+          .filled {
+            color: #ffd700;
+          }
+        }
+      }
+    }
+
+    ion-tabs {
+      ion-tab-bar {
+        --background: #ffffff;
+        border-top: 1px solid #eee;
+
+        ion-tab-button {
+          --color: #666;
+          --color-selected: #10B981;
+
+          ion-icon {
+            font-size: 24px;
+          }
+
+          ion-label {
+            font-size: 12px;
+          }
+        }
+      }
     }
   `],
   standalone: true,
   imports: [
+    CommonModule,
     IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
     IonSearchbar,
     IonCard,
+    IonCardContent,
     IonCardHeader,
     IonCardTitle,
-    IonCardContent,
     IonImg,
     IonGrid,
     IonRow,
     IonCol,
     IonMenuButton,
-    IonButtons
+    IonButtons,
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
+    IonLabel
   ]
 })
-export class HomePage implements OnInit {
+export class HomePage {
   cities: City[] = [
     {
       id: 1,
       name: 'New York',
       image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg',
-      description: 'The city that never sleeps'
+      description: 'La ville qui ne dort jamais',
+      price: '150€/nuit',
+      rating: 4
     },
     {
       id: 2,
       name: 'Paris',
       image: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg',
-      description: 'City of lights and love'
+      description: 'La ville lumière',
+      price: '180€/nuit',
+      rating: 5
     },
     {
       id: 3,
       name: 'Tokyo',
       image: 'https://images.pexels.com/photos/1510595/pexels-photo-1510595.jpeg',
-      description: 'A blend of tradition and innovation'
+      description: 'Tradition et modernité',
+      price: '120€/nuit',
+      rating: 4
+    },
+    {
+      id: 4,
+      name: 'Londres',
+      image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg',
+      description: 'La capitale britannique',
+      price: '160€/nuit',
+      rating: 4
     }
   ];
 
   filteredCities: City[] = this.cities;
 
-  constructor(private router: Router) {}
-
-  ngOnInit() {}
+  constructor(private router: Router) {
+    addIcons({ homeOutline, mapOutline, heartOutline, personOutline });
+  }
 
   handleSearch(event: any) {
     const query = event.target.value.toLowerCase();
