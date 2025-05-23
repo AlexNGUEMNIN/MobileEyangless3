@@ -17,10 +17,9 @@ import {
   IonCol,
   IonMenuButton,
   IonButtons,
-  IonTabs,
+  IonIcon,
   IonTabBar,
   IonTabButton,
-  IonIcon,
   IonLabel
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -30,7 +29,6 @@ interface City {
   id: number;
   name: string;
   image: string;
-  description: string;
   price: string;
   rating: number;
 }
@@ -49,8 +47,8 @@ interface City {
         <ion-searchbar
           placeholder="Rechercher une ville..."
           (ionInput)="handleSearch($event)"
-          class="custom-searchbar"
-        ></ion-searchbar>
+          class="custom-searchbar">
+        </ion-searchbar>
       </ion-toolbar>
     </ion-header>
 
@@ -75,37 +73,38 @@ interface City {
         </ion-row>
       </ion-grid>
 
-      <ion-tabs>
-        <ion-tab-bar slot="bottom">
-          <ion-tab-button tab="home">
-            <ion-icon name="home-outline"></ion-icon>
-            <ion-label>Accueil</ion-label>
-          </ion-tab-button>
+      <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="home" selected>
+          <ion-icon name="home-outline"></ion-icon>
+          <ion-label>Accueil</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="map">
-            <ion-icon name="map-outline"></ion-icon>
-            <ion-label>Carte</ion-label>
-          </ion-tab-button>
+        <ion-tab-button tab="map">
+          <ion-icon name="map-outline"></ion-icon>
+          <ion-label>Carte</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="favorites">
-            <ion-icon name="heart-outline"></ion-icon>
-            <ion-label>Favoris</ion-label>
-          </ion-tab-button>
+        <ion-tab-button tab="favorites">
+          <ion-icon name="heart-outline"></ion-icon>
+          <ion-label>Favoris</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="profile">
-            <ion-icon name="person-outline"></ion-icon>
-            <ion-label>Profil</ion-label>
-          </ion-tab-button>
-        </ion-tab-bar>
-      </ion-tabs>
+        <ion-tab-button tab="profile">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-label>Profil</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
     </ion-content>
   `,
   styles: [`
     ion-header {
-      background: #ffffff;
-      
       ion-toolbar {
-        --background: #ffffff;
+        --background: white;
+        
+        ion-title {
+          font-size: 20px;
+          font-weight: 600;
+        }
       }
     }
 
@@ -159,22 +158,20 @@ interface City {
       }
     }
 
-    ion-tabs {
-      ion-tab-bar {
-        --background: #ffffff;
-        border-top: 1px solid #eee;
+    ion-tab-bar {
+      --background: white;
+      border-top: 1px solid #eee;
 
-        ion-tab-button {
-          --color: #666;
-          --color-selected: #10B981;
+      ion-tab-button {
+        --color: #666;
+        --color-selected: #10B981;
 
-          ion-icon {
-            font-size: 24px;
-          }
+        ion-icon {
+          font-size: 24px;
+        }
 
-          ion-label {
-            font-size: 12px;
-          }
+        ion-label {
+          font-size: 12px;
         }
       }
     }
@@ -197,10 +194,9 @@ interface City {
     IonCol,
     IonMenuButton,
     IonButtons,
-    IonTabs,
+    IonIcon,
     IonTabBar,
     IonTabButton,
-    IonIcon,
     IonLabel
   ]
 })
@@ -208,25 +204,22 @@ export class HomePage {
   cities: City[] = [
     {
       id: 1,
-      name: 'New York',
-      image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg',
-      description: 'La ville qui ne dort jamais',
-      price: '150€/nuit',
-      rating: 4
+      name: 'Paris',
+      image: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg',
+      price: '180€/nuit',
+      rating: 5
     },
     {
       id: 2,
-      name: 'Paris',
-      image: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg',
-      description: 'La ville lumière',
-      price: '180€/nuit',
-      rating: 5
+      name: 'New York',
+      image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg',
+      price: '150€/nuit',
+      rating: 4
     },
     {
       id: 3,
       name: 'Tokyo',
       image: 'https://images.pexels.com/photos/1510595/pexels-photo-1510595.jpeg',
-      description: 'Tradition et modernité',
       price: '120€/nuit',
       rating: 4
     },
@@ -234,7 +227,6 @@ export class HomePage {
       id: 4,
       name: 'Londres',
       image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg',
-      description: 'La capitale britannique',
       price: '160€/nuit',
       rating: 4
     }

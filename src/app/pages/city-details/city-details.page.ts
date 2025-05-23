@@ -4,29 +4,23 @@ import { ActivatedRoute } from '@angular/router';
 import { 
   IonHeader, 
   IonToolbar, 
-  IonTitle, 
   IonContent,
   IonButtons,
   IonBackButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonImg,
-  IonList,
-  IonItem,
-  IonLabel,
   IonIcon,
-  IonButton
+  IonButton,
+  IonImg,
+  IonChip
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
   locationOutline, 
-  timeOutline, 
-  bedOutline, 
   wifiOutline,
   tvOutline,
-  carOutline
+  carOutline,
+  thermometerOutline,
+  restaurantOutline,
+  homeOutline
 } from 'ionicons/icons';
 
 interface CityDetail {
@@ -53,7 +47,6 @@ interface CityDetail {
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/tabs/home"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{ city?.name }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -67,10 +60,10 @@ interface CityDetail {
         <h1>{{ city?.name }}</h1>
         
         <div class="rating">
-  <span *ngFor="let star of [1,2,3,4,5]" 
-        [class.filled]="star <= (city?.rating ?? 0)">★</span>
-  <span class="reviews">(127 avis)</span>
-</div>
+          <span *ngFor="let star of [1,2,3,4,5]" 
+                [class.filled]="star <= (city?.rating ?? 0)">★</span>
+          <span class="reviews">(127 avis)</span>
+        </div>
 
         <div class="location">
           <ion-icon name="location-outline"></ion-icon>
@@ -85,10 +78,10 @@ interface CityDetail {
         <div class="section">
           <h2>Équipements</h2>
           <div class="amenities-grid">
-            <div class="amenity" *ngFor="let amenity of city?.amenities">
+            <ion-chip *ngFor="let amenity of city?.amenities">
               <ion-icon [name]="getAmenityIcon(amenity)"></ion-icon>
               <span>{{ amenity }}</span>
-            </div>
+            </ion-chip>
           </div>
         </div>
 
@@ -99,10 +92,10 @@ interface CityDetail {
             <div class="host-details">
               <h3>{{ city?.host?.name }}</h3>
               <div class="rating">
-  <span *ngFor="let star of [1,2,3,4,5]" 
-        [class.filled]="star <= (city?.rating ?? 0)">★</span>
-  <span class="reviews">(127 avis)</span>
-</div>
+                <span *ngFor="let star of [1,2,3,4,5]" 
+                      [class.filled]="star <= (city?.host?.rating ?? 0)">★</span>
+                <span class="reviews">(127 avis)</span>
+              </div>
             </div>
           </div>
         </div>
@@ -116,7 +109,10 @@ interface CityDetail {
   styles: [`
     ion-header {
       ion-toolbar {
-        --background: #ffffff;
+        --background: transparent;
+        --color: white;
+        position: absolute;
+        --border-color: transparent;
       }
     }
 
@@ -124,7 +120,7 @@ interface CityDetail {
       position: relative;
       
       ion-img {
-        height: 250px;
+        height: 300px;
         object-fit: cover;
       }
 
@@ -141,12 +137,17 @@ interface CityDetail {
     }
 
     .content-container {
-      padding: 20px;
+      padding: 24px;
+      margin-top: -40px;
+      border-radius: 40px 40px 0 0;
+      background: white;
+      position: relative;
 
       h1 {
         font-size: 24px;
-        margin: 0 0 8px;
+        font-weight: 600;
         color: #333;
+        margin: 0 0 8px;
       }
 
       .rating {
@@ -169,7 +170,7 @@ interface CityDetail {
         display: flex;
         align-items: center;
         color: #666;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
 
         ion-icon {
           margin-right: 8px;
@@ -181,9 +182,10 @@ interface CityDetail {
         margin-bottom: 24px;
 
         h2 {
-          font-size: 18px;
+          font-size: 20px;
+          font-weight: 600;
           color: #333;
-          margin-bottom: 12px;
+          margin-bottom: 16px;
         }
 
         p {
@@ -194,19 +196,18 @@ interface CityDetail {
       }
 
       .amenities-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
 
-        .amenity {
-          display: flex;
-          align-items: center;
-          color: #666;
+        ion-chip {
+          --background: #f5f5f5;
+          --color: #666;
+          padding: 8px 16px;
 
           ion-icon {
             color: #10B981;
             margin-right: 8px;
-            font-size: 20px;
           }
         }
       }
@@ -215,6 +216,9 @@ interface CityDetail {
         .host-info {
           display: flex;
           align-items: center;
+          background: #f5f5f5;
+          padding: 16px;
+          border-radius: 12px;
 
           img {
             width: 60px;
@@ -226,22 +230,14 @@ interface CityDetail {
           .host-details {
             h3 {
               margin: 0 0 4px;
-              font-size: 16px;
+              font-size: 18px;
+              font-weight: 600;
               color: #333;
             }
 
-            .host-rating {
-              color: #ffd700;
+            .rating {
+              margin: 0;
               font-size: 14px;
-
-              .filled {
-                color: #ffd700;
-              }
-
-              .reviews {
-                color: #666;
-                margin-left: 4px;
-              }
             }
           }
         }
@@ -253,7 +249,6 @@ interface CityDetail {
         --padding-top: 20px;
         --padding-bottom: 20px;
         margin-top: 24px;
-        text-transform: none;
         font-weight: 500;
       }
     }
@@ -263,20 +258,13 @@ interface CityDetail {
     CommonModule,
     IonHeader,
     IonToolbar,
-    IonTitle,
     IonContent,
     IonButtons,
     IonBackButton,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonImg,
-    IonList,
-    IonItem,
-    IonLabel,
     IonIcon,
-    IonButton
+    IonButton,
+    IonImg,
+    IonChip
   ]
 })
 export class CityDetailsPage implements OnInit {
@@ -285,11 +273,12 @@ export class CityDetailsPage implements OnInit {
   constructor(private route: ActivatedRoute) {
     addIcons({ 
       locationOutline, 
-      timeOutline, 
-      bedOutline, 
       wifiOutline,
       tvOutline,
-      carOutline
+      carOutline,
+      thermometerOutline,
+      restaurantOutline,
+      homeOutline
     });
   }
 

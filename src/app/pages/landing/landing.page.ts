@@ -5,13 +5,14 @@ import { IonContent, IonButton } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-landing',
   template: `
-    <ion-content class="landing-content">
+    <ion-content>
       <div class="landing-container">
         <img src="https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg" alt="City" class="landing-image">
-        <div class="content-overlay">
+        <div class="content">
+          <div class="logo">FungyPass</div>
           <h1>Trouvez la chambre</h1>
           <h2>dans la ville choisie</h2>
-          <ion-button expand="block" class="custom-button" (click)="navigateToLogin()">
+          <ion-button expand="block" (click)="navigateToLogin()">
             Suivant
           </ion-button>
         </div>
@@ -19,52 +20,58 @@ import { IonContent, IonButton } from '@ionic/angular/standalone';
     </ion-content>
   `,
   styles: [`
-    .landing-content {
-      --background: transparent;
-    }
-
     .landing-container {
-      height: 100%;
+      height: 100vh;
       position: relative;
+      display: flex;
+      align-items: flex-end;
     }
 
     .landing-image {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      position: absolute;
+      z-index: 1;
     }
 
-    .content-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
       padding: 2rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
       color: white;
-      text-align: left;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #10B981;
+      margin-bottom: 1rem;
     }
 
     h1 {
       font-size: 32px;
-      margin: 0;
       font-weight: bold;
+      margin: 0;
     }
 
     h2 {
       font-size: 24px;
       margin: 8px 0 32px;
-      font-weight: normal;
+      opacity: 0.9;
     }
 
-    .custom-button {
+    ion-button {
       --background: #10B981;
       --border-radius: 8px;
       --padding-top: 20px;
       --padding-bottom: 20px;
       font-weight: 500;
-      text-transform: none;
+      margin: 0;
     }
   `],
   standalone: true,
