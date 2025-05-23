@@ -67,10 +67,10 @@ interface CityDetail {
         <h1>{{ city?.name }}</h1>
         
         <div class="rating">
-          <span *ngFor="let star of [1,2,3,4,5]" 
-                [class.filled]="star <= city?.rating">★</span>
-          <span class="reviews">(127 avis)</span>
-        </div>
+  <span *ngFor="let star of [1,2,3,4,5]" 
+        [class.filled]="star <= (city?.rating ?? 0)">★</span>
+  <span class="reviews">(127 avis)</span>
+</div>
 
         <div class="location">
           <ion-icon name="location-outline"></ion-icon>
@@ -98,11 +98,11 @@ interface CityDetail {
             <img [src]="city?.host?.image" alt="Host">
             <div class="host-details">
               <h3>{{ city?.host?.name }}</h3>
-              <div class="host-rating">
-                <span *ngFor="let star of [1,2,3,4,5]" 
-                      [class.filled]="star <= city?.host?.rating">★</span>
-                <span class="reviews">(48 avis)</span>
-              </div>
+              <div class="rating">
+  <span *ngFor="let star of [1,2,3,4,5]" 
+        [class.filled]="star <= (city?.rating ?? 0)">★</span>
+  <span class="reviews">(127 avis)</span>
+</div>
             </div>
           </div>
         </div>
